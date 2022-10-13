@@ -1112,60 +1112,62 @@ void test_gamepad()
     }
 }
 
-void test_lazer()
+void test_army()
 {
-
     Surface surface(W, H);
     Event event;
 
-    Image image("images/galaxian/Lazer.png");	// loads image
+    Image image("images/galaxian/GalaxianAquaAlien.gif");	// loads image
+
     
-    const int N = 100;
-    int speed = 3;
     
-    Rect image_rect[N];
-    int image_dx[N];
-    int image_dy[N];
-        
-    for(int i = 0; i < N; i++)
-    {
-        image_rect[i] = image.getRect();
-        image_dx[i] = 0;
-        image_dy[i] = speed;
-        image_rect[i].x = rand() % W;
-        image_rect[i].y = rand() % H;
-    }
+    
+    Rect rect = image.getRect();
+
+    int speed = 5;
+    int dx = speed;
+    int dy = 0;
     
     while (1)
     {
         if (event.poll() && event.type() == QUIT) break;
+
+        rect.x += dx;
+        /*
+          rect.x += dx;
         
-        for(int i =0; i < N; i++)
-        { 
-            image_rect[i].y  += image_dy[i];
-            
-            if (image_rect[i].y > H )
-            {
-                // CASE: if lazer goes past the bottom reuse the lazer at the top.
-                image_rect[i].y = 0;
-            }
+          if (rect.x > 400)
+          {
+          dx = -1;
+          }
+          else if (rect.x < 0)
+          {
+          dx = 1;
+          }
+        */
+
+        if (rect.x + rect.w >= W)
+        {
+            // CASE: right side of image touches the right side of surface
+            dx = -speed;
+        }
+        else if (rect.x <= 0)
+        {
+            // CASE: right side of image touches the right side of surface
+            dx = speed;
         }
         
         surface.lock();
         surface.fill(BLACK);
-
-        for(int i = 0; i < N; i++)
-        {
-            surface.put_image(image, image_rect[i]); // blit image at rect on surface
-        }
-
+        surface.put_image(image, rect); // blit image at rect on surface
         surface.unlock();
         surface.flip();
-        
+
         delay(20);
     }
     return;
 }
+
 
 /*****************************************************************************
 For our programs involving graphics and sound, the template is this:
@@ -1201,7 +1203,7 @@ int main(int argc, char* argv[])
 	// Prints to console window
         //std::cout << "hello world" << std::endl;
 
-        test_lazer();
+        test_army();
 	//test_event();
 	//test_pixel();
 	//test_line();
