@@ -1,0 +1,13 @@
+#include <iostream>
+#include <cstddef>
+
+int main()
+{
+    int x = 42;
+    int *y = new int;
+    //std::cin >> *y;
+
+    *p = 42;
+    delete y;
+    return 0;
+}
