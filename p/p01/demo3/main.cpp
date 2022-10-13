@@ -1112,60 +1112,6 @@ void test_gamepad()
     }
 }
 
-void test_lazer()
-{
-
-    Surface surface(W, H);
-    Event event;
-
-    Image image("images/galaxian/Lazer.png");	// loads image
-    
-    const int N = 100;
-    int speed = 3;
-    
-    Rect image_rect[N];
-    int image_dx[N];
-    int image_dy[N];
-        
-    for(int i = 0; i < N; i++)
-    {
-        image_rect[i] = image.getRect();
-        image_dx[i] = 0;
-        image_dy[i] = speed;
-        image_rect[i].x = rand() % W;
-        image_rect[i].y = rand() % H;
-    }
-    
-    while (1)
-    {
-        if (event.poll() && event.type() == QUIT) break;
-        
-        for(int i =0; i < N; i++)
-        { 
-            image_rect[i].y  += image_dy[i];
-            
-            if (image_rect[i].y > H )
-            {
-                // CASE: if lazer goes past the bottom reuse the lazer at the top.
-                image_rect[i].y = 0;
-            }
-        }
-        
-        surface.lock();
-        surface.fill(BLACK);
-
-        for(int i = 0; i < N; i++)
-        {
-            surface.put_image(image, image_rect[i]); // blit image at rect on surface
-        }
-
-        surface.unlock();
-        surface.flip();
-        
-        delay(20);
-    }
-    return;
-}
 
 /*****************************************************************************
 For our programs involving graphics and sound, the template is this:
@@ -1201,7 +1147,6 @@ int main(int argc, char* argv[])
 	// Prints to console window
         //std::cout << "hello world" << std::endl;
 
-        test_lazer();
 	//test_event();
 	//test_pixel();
 	//test_line();

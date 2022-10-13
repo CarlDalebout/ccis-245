@@ -470,6 +470,8 @@ void test_keyboard()
 
 			delay(10);
 		}
+
+                
 		if (keypressed[SPACE])
 		{
 			int x = rand() % W;
@@ -1119,8 +1121,21 @@ void test_starfield()
     	Surface surface(W, H);
 	Event event;
 
+        Image spaceship_image("images/galaxian/GalaxianGalaxip.gif");
+        Rect spaceship_rect = spaceship_image.getRect();
+        spaceship_rect.x = W / 2 - spaceship_rect.w /2;
+        spaceship_rect.y = H - 50;
+
+        Image lazer_image("images/galaxian/Lazer.png");
+        Rect lazer_rect = lazer_image.getRect();
+        lazer_rect.x = 0;
+        lazer_rect.y = 0;
+        bool lazer_is_alive = false;
+        
+        
         // Star (int x, y, .............)
         const int N = 200;
+        const int RATE = 1000 / 30;
         int star_x[N];
         int star_y[N];
         int star_r[N];
@@ -1161,33 +1176,91 @@ void test_starfield()
         
 	while (1)
 	{
-		if (event.poll() && event.type() == QUIT) break;
+            int start = getTicks();
+            if (event.poll() && event.type() == QUIT) break;
 
-                for(int i = 0; i<N; i++)
-                {
-                    star_y[i] += star_dy[i];
-                    if(star_y[i] > H + star_r[i])
-                    {
-                        star_y[i] = 0;
-                    }
-                }
-		surface.lock();
-                surface.fill(BLACK);
+            KeyPressed keypressed = get_keypressed();
 
-                for(int i = 0; i < N; i++)
+            if (keypressed[LEFTARROW])
+            {
+                if (spaceship_rect.x == 0)
                 {
-                    surface.put_circle(star_x[i], star_y[i], star_r[i], star_R[i], star_G[i], star_B[i]);
+                    spaceship_rect.x = 0;
                 }
+                else
+                {
+                    spaceship_rect.x -= 2;
+                }
+            }
+            if (keypressed[RIGHTARROW])
+            {
+                if (spaceship_rect.x == W - spaceship_rect.w)
+                {
+                    spaceship_rect.x = W - spaceship_rect.w ;
+                }
+                else
+                {
+                    spaceship_rect.x += 2;
+                }
+            }
+
+            if(lazer_is_alive)
+            {
+                lazer_rect.y -= 5;
+                if(lazer_rect.y < -lazer_rect.h)
+                    lazer_is_alive = false;
+            }
                 
-                surface.unlock();
-		surface.flip();
+            if (keypressed[SPACE])
+            {
+                if(!lazer_is_alive)
+                {
+                    lazer_rect.x = spaceship_rect.x + spaceship_rect.w / 2 - lazer_rect.w / 2;
+                    lazer_rect.y = spaceship_rect.y - lazer_rect.h;
+                    lazer_is_alive = true;
+                }
+            }
 
-		delay(10);
+            //Move all objects
+
+
+            for(int i = 0; i<N; i++)
+            {
+                star_y[i] += star_dy[i];
+                if(star_y[i] > H + star_r[i])
+                {
+                    star_y[i] = 0;
+                }
+            }
+
+            // Collision detection
+
+            // Collision resolution
+
+            //Drawing
+            surface.lock();
+            surface.fill(BLACK);
+            
+            for(int i = 0; i < N; i++)
+            {
+                surface.put_circle(star_x[i], star_y[i], star_r[i], star_R[i], star_G[i], star_B[i]);
+            }
+
+            surface.put_image(spaceship_image, spaceship_rect);
+            if(lazer_is_alive){surface.put_image(lazer_image, lazer_rect);}
+
+            surface.unlock();
+            surface.flip();
+
+            //Fram Rate Manager
+            int end = getTicks();
+            int dt = RATE - (end - start);
+            if (dt > 0) delay(dt);
+            std::cout << dt << '\n';
 	}
 	return;
 
 }
-
 
 /*****************************************************************************
 For our programs involving graphics and sound, the template is this:
@@ -1231,12 +1304,12 @@ int main(int argc, char* argv[])
 	//test_pixel();
 	//test_line();
 	//test_circle();
-        //test_starfield();
+        test_starfield();
         //test_unfilled_circle();
 	//test_rect();
 	//test_image();
 	//helloworld();			// Of course we must have a hello world right?
-	test_keyboard();
+	//test_keyboard();
 	//test_key_up_down(); // NEW 2013
 	//test_sound();
 	//fancyhelloworld();		// eye candy

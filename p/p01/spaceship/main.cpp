@@ -470,6 +470,8 @@ void test_keyboard()
 
 			delay(10);
 		}
+
+                
 		if (keypressed[SPACE])
 		{
 			int x = rand() % W;
@@ -628,7 +630,7 @@ void test_image()
     Surface surface(W, H);
     Event event;
 
-    Image image("images/galaxian/GalaxianAquaAlien.gif");	// loads image
+    Image image("images/galaxian/GalaxianAquaAlien.gif"); // loads image
 
     Rect rect = image.getRect();
 
@@ -640,30 +642,32 @@ void test_image()
     {
         if (event.poll() && event.type() == QUIT) break;
 
-        rect.x += dx;
+         rect.x += dx;
+         
+         
         /*
-          rect.x += dx;
+           rect.x += dx;
         
-          if (rect.x > 400)
-          {
-          dx = -1;
-          }
-          else if (rect.x < 0)
-          {
-          dx = 1;
-          }
-        */
+           if (rect.x > 400)
+           {
+           dx = -1;
+           }
+           else if (rect.x < 0)
+           {
+           dx = 1;
+           }
+         */
 
-        if (rect.x + rect.w >= W)
-        {
-            // CASE: right side of image touches the right side of surface
-            dx = -speed;
-        }
-        else if (rect.x <= 0)
-        {
-            // CASE: right side of image touches the right side of surface
-            dx = speed;
-        }
+         if (rect.x + rect.w >= W)
+         {
+             // CASE: right side of image touches the right side of surface
+             dx = -speed;
+         }
+         else if (rect.x <= 0)
+         {
+             // CASE: right side of image touches the right side of surface
+             dx = speed;
+         }
         
         surface.lock();
         surface.fill(BLACK);
@@ -1112,59 +1116,150 @@ void test_gamepad()
     }
 }
 
-void test_lazer()
+void test_starfield()
 {
+    	Surface surface(W, H);
+	Event event;
 
-    Surface surface(W, H);
-    Event event;
+        Image spaceship_image("images/galaxian/GalaxianGalaxip.gif");
+        Rect spaceship_rect = spaceship_image.getRect();
+        spaceship_rect.x = W / 2 - spaceship_rect.w /2;
+        spaceship_rect.y = H - 50;
 
-    Image image("images/galaxian/Lazer.png");	// loads image
-    
-    const int N = 100;
-    int speed = 3;
-    
-    Rect image_rect[N];
-    int image_dx[N];
-    int image_dy[N];
+        Image lazer_image("images/galaxian/Lazer.png");
+        Rect lazer_rect = lazer_image.getRect();
+        lazer_rect.x = 0;
+        lazer_rect.y = 0;
+        bool lazer_is_alive = false;
         
-    for(int i = 0; i < N; i++)
-    {
-        image_rect[i] = image.getRect();
-        image_dx[i] = 0;
-        image_dy[i] = speed;
-        image_rect[i].x = rand() % W;
-        image_rect[i].y = rand() % H;
-    }
-    
-    while (1)
-    {
-        if (event.poll() && event.type() == QUIT) break;
         
-        for(int i =0; i < N; i++)
-        { 
-            image_rect[i].y  += image_dy[i];
-            
-            if (image_rect[i].y > H )
-            {
-                // CASE: if lazer goes past the bottom reuse the lazer at the top.
-                image_rect[i].y = 0;
-            }
-        }
-        
-        surface.lock();
-        surface.fill(BLACK);
+        // Star (int x, y, .............)
+        const int N = 200;
+        const int RATE = 1000 / 30;
+        int star_x[N];
+        int star_y[N];
+        int star_r[N];
+        int star_dx[N];
+        int star_dy[N];
+        int star_R[N];
+        int star_G[N];
+        int star_B[N];
 
-        for(int i = 0; i < N; i++)
+        for(int i = 0 ; i < N; i++)
         {
-            surface.put_image(image, image_rect[i]); // blit image at rect on surface
+            star_x[i] = rand() % W;
+            star_y[i] = rand() % H;
+            star_r[i] = rand() % 3 + 2;
+            star_dx[i] = 0;
+            star_dy[i] = rand() % 3 + 1;
+            switch (star_dy[i])
+            {
+                case 1:
+                    star_R[i] = rand() % 70 + 50;
+                    star_G[i] = star_R[i];
+                    star_B[i] = star_R[i];
+                    star_r[i] = 2;
+                    break;
+                case 2:
+                    star_R[i] = rand() % 150 + 50;
+                    star_G[i] = star_R[i];
+                    star_B[i] = star_R[i];
+                    star_r[i] = rand() % 2 + 2;
+                case 3:
+                    star_R[i] = rand() % 200 + 55;
+                    star_G[i] = star_R[i];
+                    star_B[i] = star_R[i];
+                    star_r[i] = rand() % 3 + 3;
+            }
+            
         }
-
-        surface.unlock();
-        surface.flip();
         
-        delay(20);
-    }
-    return;
+	while (1)
+	{
+            int start = getTicks();
+            if (event.poll() && event.type() == QUIT) break;
+
+            KeyPressed keypressed = get_keypressed();
+
+            if (keypressed[LEFTARROW])
+            {
+                if (spaceship_rect.x == 0)
+                {
+                    spaceship_rect.x = 0;
+                }
+                else
+                {
+                    spaceship_rect.x -= 2;
+                }
+            }
+            if (keypressed[RIGHTARROW])
+            {
+                if (spaceship_rect.x == W - spaceship_rect.w)
+                {
+                    spaceship_rect.x = W - spaceship_rect.w ;
+                }
+                else
+                {
+                    spaceship_rect.x += 2;
+                }
+            }
+
+            if(lazer_is_alive)
+            {
+                lazer_rect.y -= 5;
+                if(lazer_rect.y < -lazer_rect.h)
+                    lazer_is_alive = false;
+            }
+                
+            if (keypressed[SPACE])
+            {
+                if(!lazer_is_alive)
+                {
+                    lazer_rect.x = spaceship_rect.x + spaceship_rect.w / 2 - lazer_rect.w / 2;
+                    lazer_rect.y = spaceship_rect.y - lazer_rect.h;
+                    lazer_is_alive = true;
+                }
+            }
+
+            //Move all objects
+
+
+            for(int i = 0; i<N; i++)
+            {
+                star_y[i] += star_dy[i];
+                if(star_y[i] > H + star_r[i])
+                {
+                    star_y[i] = 0;
+                }
+            }
+
+            // Collision detection
+
+            // Collision resolution
+
+            //Drawing
+            surface.lock();
+            surface.fill(BLACK);
+            
+            for(int i = 0; i < N; i++)
+            {
+                surface.put_circle(star_x[i], star_y[i], star_r[i], star_R[i], star_G[i], star_B[i]);
+            }
+
+            surface.put_image(spaceship_image, spaceship_rect);
+            if(lazer_is_alive){surface.put_image(lazer_image, lazer_rect);}
+
+            surface.unlock();
+            surface.flip();
+
+            //Fram Rate Manager
+            int end = getTicks();
+            int dt = RATE - (end - start);
+            if (dt > 0) delay(dt);
+            std::cout << dt << '\n';
+	}
+	return;
+
 }
 
 /*****************************************************************************
@@ -1176,6 +1271,10 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+
+
+
+
 
 Our main() is made up of calling various functions. This is the first time you
 are actually seeing the *code* of functions. Before this, you have been 
@@ -1201,12 +1300,12 @@ int main(int argc, char* argv[])
 	// Prints to console window
         //std::cout << "hello world" << std::endl;
 
-        test_lazer();
 	//test_event();
 	//test_pixel();
 	//test_line();
 	//test_circle();
-	//test_unfilled_circle();
+        test_starfield();
+        //test_unfilled_circle();
 	//test_rect();
 	//test_image();
 	//helloworld();			// Of course we must have a hello world right?
