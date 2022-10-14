@@ -470,8 +470,6 @@ void test_keyboard()
 
 			delay(10);
 		}
-
-                
 		if (keypressed[SPACE])
 		{
 			int x = rand() % W;
@@ -527,43 +525,43 @@ void test_key_up_down()
 
 	while (1)
 	{
-            int key = -1;
-            if (event.poll())
+        int key = -1;
+		if (event.poll())
+        {
+            if (event.type() == QUIT) break;
+            else if (event.type() == KEYDOWN)
             {
-                if (event.type() == QUIT) break;
-                else if (event.type() == KEYDOWN)
-                {
-                    key = 1;
-                }
-                else if (event.type() == KEYUP)
-                {
-                    key = 2;
-                }
+                key = 1;
             }
-            
-            
-            if (key != -1)
+            else if (event.type() == KEYUP)
             {
-                int x = rand() % W;
-                int y = rand() % H;
-                int rx = min(int(W - 1 - x), int(x));
-                int ry = min(H - 1 - y, y);
+                key = 2;
+            }
+        }
 
-                surface.lock();
-                switch (key)
-                {
-                    case 1:
-                        surface.put_circle(x, y, min(rx, ry), 255, 0, 0);
-                        break;
-                    case 2:
-                        surface.put_circle(x, y, min(rx, ry), 0, 255, 0);
-                        break;
-                }                    
-                surface.unlock();
-                surface.flip();
-            }
+
+        if (key != -1)
+        {
+            int x = rand() % W;
+            int y = rand() % H;
+            int rx = min(int(W - 1 - x), int(x));
+            int ry = min(H - 1 - y, y);
+
+            surface.lock();
+            switch (key)
+            {
+                case 1:
+                    surface.put_circle(x, y, min(rx, ry), 255, 0, 0);
+                    break;
+                case 2:
+                    surface.put_circle(x, y, min(rx, ry), 0, 255, 0);
+                    break;
+            }                    
+            surface.unlock();
+            surface.flip();
+        }
         
-            delay(10);
+        delay(10);
 	}
 	return;
 }
@@ -627,57 +625,55 @@ surface.
 *****************************************************************************/
 void test_image()
 {
-    Surface surface(W, H);
-    Event event;
+	Surface surface(W, H);
+	Event event;
 
-    Image image("images/galaxian/GalaxianAquaAlien.gif"); // loads image
+	Image image("images/galaxian/GalaxianAquaAlien.gif");	// loads image
 
     Rect rect = image.getRect();
 
     int speed = 5;
-    int dx = speed;
+	int dx = speed;
     int dy = 0;
     
-    while (1)
-    {
-        if (event.poll() && event.type() == QUIT) break;
+	while (1)
+	{
+		if (event.poll() && event.type() == QUIT) break;
 
-         rect.x += dx;
-         
-         
+        rect.x += dx;
         /*
-           rect.x += dx;
+          rect.x += dx;
         
-           if (rect.x > 400)
-           {
-           dx = -1;
-           }
-           else if (rect.x < 0)
-           {
-           dx = 1;
-           }
-         */
+        if (rect.x > 400)
+        {
+            dx = -1;
+        }
+        else if (rect.x < 0)
+        {
+            dx = 1;
+        }
+        */
 
-         if (rect.x + rect.w >= W)
-         {
-             // CASE: right side of image touches the right side of surface
-             dx = -speed;
-         }
-         else if (rect.x <= 0)
-         {
-             // CASE: right side of image touches the right side of surface
-             dx = speed;
-         }
+        if (rect.x + rect.w >= W)
+        {
+            // CASE: right side of image touches the right side of surface
+            dx = -speed;
+        }
+        else if (rect.x <= 0)
+        {
+            // CASE: right side of image touches the right side of surface
+            dx = speed;
+        }
         
-        surface.lock();
-        surface.fill(BLACK);
+		surface.lock();
+		surface.fill(BLACK);
         surface.put_image(image, rect); // blit image at rect on surface
         surface.unlock();
-        surface.flip();
+		surface.flip();
 
-        delay(20);
-    }
-    return;
+		delay(20);
+	}
+	return;
 }
 
 
@@ -1116,156 +1112,6 @@ void test_gamepad()
     }
 }
 
-struct Star
-{
-    int x;
-    int y;
-    int r;
-    int dx;
-    int dy;
-    int R;
-    int G;
-    int B;
-};
-
-void test_starfield()
-{
-    	Surface surface(W, H);
-	Event event;
-
-        Image spaceship_image("images/galaxian/GalaxianGalaxip.gif");
-        Rect spaceship_rect = spaceship_image.getRect();
-        spaceship_rect.x = W / 2 - spaceship_rect.w /2;
-        spaceship_rect.y = H - 50;
-
-        Image lazer_image("images/galaxian/Lazer.png");
-        Rect lazer_rect = lazer_image.getRect();
-        lazer_rect.x = 0;
-        lazer_rect.y = 0;
-        bool lazer_is_alive = false;
-        
-        
-        // Star (int x, y, .............)
-        const int N = 200;
-        const int RATE = 1000 / 30;
-
-        Star star[N];
-
-        for(int i = 0 ; i < N; i++)
-        {
-            star[i].x = rand() % W;
-            star[i].y = rand() % H;
-            star[i].r = rand() % 3 + 2;
-            star[i].dx = 0;
-            star[i].dy = rand() % 3 + 1;
-            switch (star[i].dy)
-            {
-                case 1:
-                    star[i].R = rand() % 70 + 50;
-                    star[i].G = star[i].R;
-                    star[i].B = star[i].R;
-                    star[i].r = 2;
-                    break;
-                case 2:
-                    star[i].R = rand() % 150 + 50;
-                    star[i].G = star[i].R;
-                    star[i].B = star[i].R;
-                    star[i].r = rand() % 2 + 2;
-                case 3:
-                    star[i].R = rand() % 200 + 55;
-                    star[i].G = star[i].R;
-                    star[i].B = star[i].R;
-                    star[i].r = rand() % 3 + 3;
-            }
-            
-        }
-        
-	while (1)
-	{
-            int start = getTicks();
-            if (event.poll() && event.type() == QUIT) break;
-
-            KeyPressed keypressed = get_keypressed();
-
-            if (keypressed[LEFTARROW])
-            {
-                if (spaceship_rect.x == 0)
-                {
-                    spaceship_rect.x = 0;
-                }
-                else
-                {
-                    spaceship_rect.x -= 2;
-                }
-            }
-            if (keypressed[RIGHTARROW])
-            {
-                if (spaceship_rect.x == W - spaceship_rect.w)
-                {
-                    spaceship_rect.x = W - spaceship_rect.w ;
-                }
-                else
-                {
-                    spaceship_rect.x += 2;
-                }
-            }
-
-            if(lazer_is_alive)
-            {
-                lazer_rect.y -= 5;
-                if(lazer_rect.y < -lazer_rect.h)
-                    lazer_is_alive = false;
-            }
-                
-            if (keypressed[SPACE])
-            {
-                if(!lazer_is_alive)
-                {
-                    lazer_rect.x = spaceship_rect.x + spaceship_rect.w / 2 - lazer_rect.w / 2;
-                    lazer_rect.y = spaceship_rect.y - lazer_rect.h;
-                    lazer_is_alive = true;
-                }
-            }
-
-            //Move all objects
-
-
-            for(int i = 0; i < N; i++)
-            { 
-                star[i].y += star[i].dy;
-                if(star[i].y > H + star[i].r)
-                {
-                    star[i].y = 0;
-                }
-            }
-
-            // Collision detection
-
-            // Collision resolution
-
-            //Drawing
-            surface.lock();
-            surface.fill(BLACK);
-            
-            for(int i = 0; i < N; i++)
-            {
-                surface.put_circle(star[i].x, star[i].y, star[i].r, star[i].R, star[i].G, star[i].B);
-            }
-
-            surface.put_image(spaceship_image, spaceship_rect);
-            if(lazer_is_alive){surface.put_image(lazer_image, lazer_rect);}
-
-            surface.unlock();
-            surface.flip();
-
-            //Fram Rate Manager
-            int end = getTicks();
-            int dt = RATE - (end - start);
-            if (dt > 0) delay(dt);
-            std::cout << dt << '\n';
-	}
-	return;
-}
 
 /*****************************************************************************
 For our programs involving graphics and sound, the template is this:
@@ -1276,10 +1122,6 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-
-
-
-
 
 Our main() is made up of calling various functions. This is the first time you
 are actually seeing the *code* of functions. Before this, you have been 
@@ -1303,14 +1145,13 @@ int main(int argc, char* argv[])
 	//freopen("CON", "w", stderr);
 
 	// Prints to console window
-        //std::cout << "hello world" << std::endl;
+	std::cout << "hello world" << std::endl;
 
 	//test_event();
 	//test_pixel();
 	//test_line();
 	//test_circle();
-        test_starfield();
-        //test_unfilled_circle();
+	//test_unfilled_circle();
 	//test_rect();
 	//test_image();
 	//helloworld();			// Of course we must have a hello world right?
@@ -1319,7 +1160,7 @@ int main(int argc, char* argv[])
 	//test_sound();
 	//fancyhelloworld();		// eye candy
 	//test_polygon(false);
-	//test_polygon(true);
+	test_polygon(true);
 
     // mouse
     //test_mouse(); // NEW 2013
