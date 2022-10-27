@@ -1253,7 +1253,10 @@ void test_starfield()
             }
 
             surface.put_image(spaceship_image, spaceship_rect);
-            if(lazer_is_alive){surface.put_image(lazer_image, lazer_rect);}
+
+            if(lazer_is_alive)
+                surface.put_image(lazer_image, lazer_rect);
+            
 
             surface.unlock();
             surface.flip();
