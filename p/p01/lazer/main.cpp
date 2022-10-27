@@ -17,6 +17,7 @@
 #include "compgeom.h"
 #include "Surface.h"
 #include "Event.h"
+#include "Lazer.h"
 
 /*****************************************************************************
 This is a short introduction to graphics, animation, sound, music, keyboard
@@ -1118,36 +1119,33 @@ void test_lazer()
     Surface surface(W, H);
     Event event;
 
-    Image image("images/galaxian/Lazer.png");	// loads image
+    const int RATE = 1000/30;
+    const int N = 1000;
     
-    const int N = 100;
-    int speed = 3;
-    
-    Rect image_rect[N];
-    int image_dx[N];
-    int image_dy[N];
-        
+    Lazer lazer[N];
+
+    Image i_ = Image("images/galaxian/Lazer.png");
+
     for(int i = 0; i < N; i++)
     {
-        image_rect[i] = image.getRect();
-        image_dx[i] = 0;
-        image_dy[i] = speed;
-        image_rect[i].x = rand() % W;
-        image_rect[i].y = rand() % H;
+        lazer[i].rect.x = rand()%W;
+        lazer[i].rect.y = rand()%H;
     }
     
     while (1)
     {
+        int start = getTicks();
         if (event.poll() && event.type() == QUIT) break;
         
         for(int i =0; i < N; i++)
         { 
-            image_rect[i].y  += image_dy[i];
+            lazer[i].rect.y  += lazer[i].dy;
             
-            if (image_rect[i].y > H )
+            if (lazer[i].rect.y > H )
             {
                 // CASE: if lazer goes past the bottom reuse the lazer at the top.
-                image_rect[i].y = 0;
+                lazer[i].rect.y = 0;
+                lazer[i].rect.x = rand()%W;
             }
         }
         
@@ -1156,13 +1154,18 @@ void test_lazer()
 
         for(int i = 0; i < N; i++)
         {
-            surface.put_image(image, image_rect[i]); // blit image at rect on surface
+            surface.put_image(i_, lazer[i].rect); // blit image at rect on surface
         }
 
         surface.unlock();
         surface.flip();
         
-        delay(20);
+        //Frame Rate Manager
+        int end = getTicks();
+        int dt = RATE - (end - start);
+        if(dt > 0) delay(dt);
+        std::cout << dt << '\n';
+
     }
     return;
 }
