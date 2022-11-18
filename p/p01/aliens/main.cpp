@@ -15,6 +15,7 @@
 #include "Includes.h"
 #include "Constants.h"
 #include "compgeom.h"
+#include "Spaceship.h"
 #include "Surface.h"
 #include "Event.h"
 #include "Alien.h"
@@ -24,38 +25,38 @@
 
 void test_Alien()
 {
+    const int W = 800, H =600;  
     Surface surface(W, H);
     Event event;
 
     const int RATE = 1000/30;
     const int row = 5;
-    const int col = 15;
+    const int col = 20;
 
-    Image spaceship_image("images/galaxian/GalaxianGalaxip.gif");
-    Rect spaceship_rect = spaceship_image.getRect();
+    //player
+    Spaceship spaceship;
+    spaceship.image = Image("images/galaxian/GalaxianGalaxip.gif");
     spaceship_rect.x = W / 2 - spaceship_rect.w /2;
     spaceship_rect.y = H - 50;
-    
-    Image lazer_image("images/galaxian/Lazer.png");
-    Rect lazer_rect = lazer_image.getRect();
-    lazer_rect.x = 0;
-    lazer_rect.y = 0;
-    bool lazer_is_alive = false;
-     
+
+    Lazer lazer;
+    lazer.image = Image("images/galaxian/Lazer.png");
+
+    //Aliens
     Alien alien[row][col];
 
     Image i_[4] = {Image("images/galaxian/GalaxianAquaAlien.gif"),
-                  Image("images/galaxian/GalaxianPurpleAlien.gif"),
-                  Image("images/galaxian/GalaxianRedAlien.gif"),
-                  Image("images/galaxian/GalaxianFlagship.gif")};
+                   Image("images/galaxian/GalaxianPurpleAlien.gif"),
+                   Image("images/galaxian/GalaxianRedAlien.gif"),
+                   Image("images/galaxian/GalaxianFlagship.gif")};
     
     for(int i = 0; i < row ; i ++)
     {
         for(int j = 0; j < col; j++)
         {
-            alien[i][j].rect.x = alien[i][j].rect.w * j;
+            alien[i][j].x() = alien[i][j].rect.w * j;
             alien[i][j].rect.y = (alien[i][j].rect.h) * i;
-            alien[i][j].image = i_[i%3];
+            alien[i][j].image = i_[i%4];
         }
     }
     
@@ -114,6 +115,7 @@ void test_Alien()
             }
         }
 
+        //Screen Collision
         if ((alien[0][col].rect.x + (alien[0][col].rect.w * col)) >= W) // rect.x + rect.w >= W
         {
             // CASE: right side of image touches the right side of surface
@@ -128,8 +130,6 @@ void test_Alien()
         }
         else if (alien[0][0].rect.x <= 0) // rect.x <= 0
         {
-            // CASE: right side of image touches the right side of surface
-            //dx = speed;
             for(int i = 0; i < row; i++)
             {    
                 for(int j = 0; j < col; j++)
