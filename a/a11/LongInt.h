@@ -11,6 +11,7 @@ public:
     LongInt(int x = 0)
     {
         if(x < 0){sign_ = -1; x *= -1;}
+        else sign_ = 1;
         int i = 0;
         while(x != 0)
         {
@@ -40,7 +41,7 @@ public:
         }
     }
 
-    LongInt(LongInt &x)
+    LongInt(const LongInt &x)
     {
         for(unsigned int i = 0; i < x.size(); ++i)
         {
@@ -49,10 +50,15 @@ public:
         sign_ = x.sign_;
     }
 
-    int size() const {return v_.size();}
-    int sign() const {return sign_;}
+    int  size() const {return v_.size();}
+    int  sign() const {return sign_;}
+    int &sign() {return sign_;}
+
+    void reduce();
 
     int operator[](int i) const {return v_[i];}
+
+    LongInt &operator=(const LongInt &);
     
 //bool operators
     bool operator==(LongInt &) const;

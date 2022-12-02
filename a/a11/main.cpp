@@ -181,9 +181,11 @@
 
 int main()
 {
-    LongInt z(116);
+    LongInt z(-150);
     std::cout << z << '\n';
-    LongInt y(115);
-    std::cout << y << '\n'; 
-    std::cout << (z > y) << '\n';
+    LongInt y(-225);
+    std::cout << y << '\n';
+    // LongInt x;
+    z *= y;
+    std::cout << z << '\n';
 }
