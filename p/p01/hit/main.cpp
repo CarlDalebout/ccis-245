@@ -27,26 +27,21 @@ void test_Alien()
     Event event;
 
     const int RATE = 1000/30;
-    const int row = 5;
-    const int col = 15;
-
     
-    Image i_[6] = {Image("images/galaxian/GalaxianGalaxip.gif"),
-                   Image("images/galaxian/Lazer.png"),
-                   Image("images/galaxian/GalaxianRedAlien.gif"),
-                   Image("images/galaxian/GalaxianAquaAlien.gif"),
-                   Image("images/galaxian/GalaxianPurpleAlien.gif"),
-                   Image("images/galaxian/GalaxianFlagship.gif")};
+    const Image i_[6] = {Image("images/galaxian/GalaxianGalaxip.gif"),
+                         Image("images/galaxian/Lazer.png"),
+                         Image("images/galaxian/GalaxianRedAlien.gif"),
+                         Image("images/galaxian/GalaxianAquaAlien.gif"),
+                         Image("images/galaxian/GalaxianPurpleAlien.gif"),
+                         Image("images/galaxian/GalaxianFlagship.gif")};
     
     Spaceship spaceship;
-    
+    Lazer lazer;
+    Alien alien;
+
     spaceship.rect.x = W / 2 - spaceship.rect.w / 2;
     spaceship.rect.y = H - 50;
     
-    Lazer lazer;
-
-    Alien alien;
-
     alien.rect.x = W / 2 - alien.rect.w / 2;
     
     while (1)
@@ -56,43 +51,16 @@ void test_Alien()
 
         KeyPressed keypressed = get_keypressed();
 
-        if (keypressed[LEFTARROW])
+        spaceship.move(keypressed);
+        spaceship.move_lazers();
+        alien.move();
+       
+        for(int i = 0; i < spaceship.Ammo.size(); ++i)
         {
-            if (spaceship.rect.x == 0)
+            if(spaceship.Ammo[i].collison(alien.rect))
             {
-                spaceship.rect.x = 0;
-            }
-            else
-            {
-                spaceship.rect.x -= spaceship.speed;
-            }
-        }
-        if (keypressed[RIGHTARROW])
-        {
-            if (spaceship.rect.x == W - spaceship.rect.w)
-            {
-                spaceship.rect.x = W - spaceship.rect.w ;
-            }
-            else
-            {
-                spaceship.rect.x += spaceship.speed;
-            }
-        }
-
-        if(lazer.alive)
-        {
-            lazer.rect.y -= 5;
-            if(lazer.rect.y < -lazer.rect.h)
-                lazer.alive = false;
-        }
-                
-        if (keypressed[SPACE])
-        {
-            if(!lazer.alive)
-            {
-                lazer.rect.x = spaceship.rect.x + spaceship.rect.w / 2 - lazer.rect.w / 2;
-                lazer.rect.y = spaceship.rect.y - lazer.rect.h;
-                lazer.alive = true;
+                spaceship.erase(i);//erase lazer from ammo vector
+                alien.alive = 0;                
             }
         }
 
@@ -101,13 +69,17 @@ void test_Alien()
         surface.fill(BLACK);
 
         // blit image at rect on surface
-        //surface.put_image(alien.image, alien.rect);
-         
-        //surface.put_image(spaceship.image, spaceship.rect);
+
+        if(alien.alive_)
+            surface.put_image(Alien::AquaAlien_Image, alien.rect);
+                 
+        surface.put_image(spaceship.image, spaceship.rect);
+
+        for(int i = 0; i < spaceship.Ammo.size(); ++i)
+        {
+            surface.put_image(Lazer::image, spaceship.Ammo[i].rect_);
+        }
         
-        if(lazer.alive)
-              surface.put_image(lazer.image, lazer.rect);
-       
         surface.unlock();
         surface.flip();
 
@@ -115,7 +87,7 @@ void test_Alien()
         int end = getTicks();
         int dt = RATE - (end - start);
         if(dt > 0) delay(dt);
-        std::cout << dt << '\n';
+        //std::cout << dt << ' ' << Spaceship::Fired_Lazer << '\n';
     }
     return;
 }

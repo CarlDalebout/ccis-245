@@ -12,18 +12,32 @@ Carl Dalebout
 class Lazer
 {
 public:
-  Lazer(Image i = Image("images/galaxian/Lazer.png"),
-        int s = 5,
-        int x = 0,
-        int y = 0,
-        bool a = 0)
-      : image(i), rect(i.getRect()), speed(s), dx(x), dy(y), alive(a)
+Lazer(int s = 5,
+      int x = 0,
+      int y = 0)
+    :rect_(image.getRect()),
+     speed_(s), dx_(x), dy_(y),
+     enemey_(0)
     {}
+    int      x() const {return rect_.x;}
+    int     &x()       {return rect_.x;}
+    int      y() const {return rect_.y;}
+    int     &y()       {return rect_.y;}
+    int      w() const {return rect_.w;}
+    int      h() const {return rect_.h;}
     
-    Image image;
-    Rect  rect;
-    int   speed, dx, dy;
-    bool alive;
+    int    top() const {return rect_.y;}
+    int bottom() const {return rect_.y + rect_.h;}
+    int   left() const {return rect_.x;}
+    int  right() const {return rect_.x + rect_.w;}
+
+    bool collison(Rect &) const;
+
+//private:
+    static Image image;
+    Rect  rect_; // area is rect_.w * rect_d.h
+    int   speed_, dx_, dy_;
+    bool  enemey_;
 };
 
 #endif

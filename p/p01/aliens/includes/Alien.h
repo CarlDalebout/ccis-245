@@ -6,27 +6,17 @@ Carl Dalebout
 #define ALIEN_H
 
 #include <iostream>
-#include "Rect.h"
-#include "Image.h"
+#include "Spaceship.h"
 
-class Alien
+class Alien : public: Spaceship
 {
 public:
     Alien(Image i = Image("images/galaxian/GalaxianAquaAlien.gif"),
-          int  s = 3,
-          int  x = 0,
-          int  y = 0,
-          bool h = 0)
-        : image(i), rect(i.getRect()), speed(s), dx(x), dy(y), hit(0)
+          double  x_ = 0,
+          double  y_ = 0,)
+        : image(i), rect(i.getRect()), dx(x_), dy(y_), hit(0)
     {}
 
-    void move();
-    void run();
-    
-    Image image;
-    Rect  rect;
-    int   speed, dx, dy;
-    bool  hit;
 };
 
 #endif
