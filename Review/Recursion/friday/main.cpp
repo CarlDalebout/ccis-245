@@ -66,10 +66,64 @@ int factorial(int i) //factorial = 1 * 2 * 3 * 4 * ... * n
     else return factorial(i-1)*i; 
 }
 
+int c(int n, int r)
+{
+    if(r == 0 || n == r)
+        return 1;
+    else
+        return c(n-1, r-1) + c(n-1, r);
+}
+
+int min(int x[], int n)
+{
+    if(n == 0)
+        return x[0];
+    else
+    {
+        int m = min(x, n-1);
+        return (x[n-1] <= m ? x[n-1] : m);
+    }
+}
+
+int max(int x[], int n)
+{
+    if(n == 0)
+        return x[0];
+    else
+    {
+        int m = max(x, n-1);
+        return (x[n-1] >= m ? x[n-1] : m);
+    }
+}
+
+int count(int x[], int n, int target)
+{
+    
+    if (n == 0)
+        return 0;
+    else
+    {
+        int c = count(x, n-1, target);
+        return c + (x[n-1] == target ? 1 : 0);
+    }
+}
+
+void h(int n, char from, char helper, char to)
+{
+    if(n==1)
+        std::cout << from << "->" << to << '\n';
+    else
+    {
+        h(n-1, from, to, helper);
+        h(1, from, helper, to);
+        h(n-1, helper, from, to);
+    }
+}
+
 int main ()
 {
     int i[] = {3, 4, 5, 6};
     //std::cin >> i;
-    std::cout << sum(i, 4) << std::endl;
+    h(6, 'A', 'B', 'C');
     return 0;
 }
