@@ -1,6 +1,7 @@
-/*******************************************************
-Carl Dalebout
-*******************************************************/
+/****************************************************************************
+ Yihsiang Liow
+ Copyright
+ ****************************************************************************/
 #include <iostream>
 #include <cmath>
 #include <vector>
@@ -16,96 +17,76 @@ Carl Dalebout
 #include "compgeom.h"
 #include "Surface.h"
 #include "Event.h"
+#include "Army.h"
+#include "Spaceship.h"
+#include "Lazer.h"
 
-struct Star
+void game()
 {
-    int x;
-    int y;
-    int r;
-    int dx;
-    int dy;
-    int R;
-    int G;
-    int B;
-};
-
-void star_init(Star & star, int x, int y, int r, int dx, int dy)
-{
-    star.x = rand() % W;
-    star.y = rand() % H;
-    star.r = rand() % 3 + 2;
-    star.dx = 0;
-    star.dy = rand() % 3 + 1;
-    switch (star.dy)
-    {
-        case 1:
-            star.R = rand() % 70 + 50;
-            star.G = star.R;
-            star.B = star.R;
-            star.r = 2;
-            break;
-        case 2:
-            star.R = rand() % 150 + 50;
-            star.G = star.R;
-            star.B = star.R;
-            star.r = rand() % 2 + 2;
-        case 3:
-            star.R = rand() % 200 + 55;
-            star.G = star.R;
-            star.B = star.R;
-            star.r = rand() % 3 + 3;
-    }
-}
-
-void test()
-{
-    
-    Surface surface(W, H); // W = 640, H = 480
+    Surface surface(W, H);
     Event event;
 
-    const int N = 200;
-    const int RATE = 1000 / 30;
+    const int RATE = 1000/30;
+    const int Collomes = 13;
+    const int Rows = 6;
     
-    Star star[N];
+    Spaceship spaceship;
+    Army army;
 
-    for(int i = 0; i < N; i++)
-    {
-        star_init(star[i], rand() % W, rand() % H, rand() % 3 + 2, 0, rand() % 3 + 1);
-    }
-
-    while(1)
+    spaceship.x = W/2 - spaceship.w/2;
+    spaceship.y = H - spaceship.h;
+    
+    while (1)
     {
         int start = getTicks();
-        if(event.poll() && event.type() == QUIT) break;
+        if (event.poll() && event.type() == QUIT) break;
 
         KeyPressed keypressed = get_keypressed();
 
-        //Check inputs
+        //move objects
+        spaceship.move(keypressed);
+        spaceship.move_lazers();
+        //army.move();
         
-
-        //Move all objects
-        for(int i = 0; i < N; i++)
+        // check collisions
+        for(int i = 0; i < spaceship.Ammo.size(); ++i)
         {
-            star[i].y += star[i].dy;
-            if(star[i].y > H + star[i].r)
+            for(int j = 0; j < Collomes; ++j)
             {
-                star[i].y = 0;
+                for(int k = 0; k < Rows; ++k)
+                {
+                    if(spaceship.Ammo[i].collision(alien[j][k])
+                       && alien[j][k].alive)
+                    {
+                        std::cout << "Collision with Ammo" << i << ' ';
+                        alien[j][k].alive = false;
+                        spaceship.erase(i);//erase lazer from ammo vector
+                    }
+                }
             }
         }
 
-        // Collision detection
-
-        // Collision resolution
-
-        //Drawing
+        
         surface.lock();
         surface.fill(BLACK);
 
-        for(int i = 0; i < N; i++)
-        {
-            surface.put_circle(star[i].x, star[i].y, star[i].r, star[i].R, star[i].G, star[i].B);
-        }
+        // blit image at rect on surface
 
+        for(int i = 0; i < Collomes; ++i)
+        {
+            for(int j = 0; j < Rows; ++j)
+            {
+                if(alien[i][j].alive)
+                    surface.put_image(Alien::image[j%4], alien[i][j].rect());
+            }
+        }
+        surface.put_image(spaceship.image, spaceship.rect());
+
+        for(int i = 0; i < spaceship.Ammo.size(); ++i)
+        {
+            surface.put_image(Lazer::image, spaceship.Ammo[i].rect());
+        }
+        
         surface.unlock();
         surface.flip();
 
@@ -113,13 +94,41 @@ void test()
         int end = getTicks();
         int dt = RATE - (end - start);
         if(dt > 0) delay(dt);
-        std::cout << dt << '\n';
-        
+        // std::cout << dt << ' ' << Spaceship::Fired_Lazer << '\n';
     }
+    return;
 }
 
-int main()
+
+/*****************************************************************************
+For our programs involving graphics and sound, the template is this:
+
+int main(int argc, char* argv[])
 {
-    test();
+    ... PROGRAM ...
+
+    return 0;
+}
+
+Our main() is made up of calling various functions. This is the first time you
+are actually seeing the *code* of functions. Before this, you have been 
+*using* functions, i.e. *calling* the functions.
+
+For instance the first function call is
+
+	test_event();
+
+When you run this program, the program will execute a function call to 
+test_event(). This means that the program will look for "text_event" and 
+execute the code until it sees the statement "return". Executing return
+will cause the program to go back to where it came from.
+
+After running the program, comment out the call to test_event(), uncomment
+the call to test_pixel() and run the program. Etc.
+*****************************************************************************/
+int main(int argc, char* argv[])
+{
+    game();
+       
     return 0;
 }
