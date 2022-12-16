@@ -1,3 +1,9 @@
-#include <Army.h>
+#include "Army.h"
 
-int Army::Offset(5);
+int Army::Offset = 16;
+
+
+void Army::move()
+{
+    
+}

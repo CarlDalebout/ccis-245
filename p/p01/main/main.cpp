@@ -17,7 +17,7 @@
 #include "compgeom.h"
 #include "Surface.h"
 #include "Event.h"
-#include "Army.h"
+#include "Alien.h"
 #include "Spaceship.h"
 #include "Lazer.h"
 
@@ -27,12 +27,17 @@ void game()
     Event event;
 
     const int RATE = 1000/30;
-    const int Collomes = 13;
+    const int Columns = 13;
     const int Rows = 6;
     
     Spaceship spaceship;
-    Army army;
 
+    std::cout << "Creating spaceship\n";
+    
+    Alien alien[Rows][Columns];
+
+    std::cout << "Creating alians and spaceship\n";
+    
     spaceship.x = W/2 - spaceship.w/2;
     spaceship.y = H - spaceship.h;
     
@@ -46,38 +51,36 @@ void game()
         //move objects
         spaceship.move(keypressed);
         spaceship.move_lazers();
-        //army.move();
+        //alien.move();
         
         // check collisions
-        for(int i = 0; i < spaceship.Ammo.size(); ++i)
+        for(int i = 0; i < Columns; ++i)
         {
-            for(int j = 0; j < Collomes; ++j)
+            for(int j = 0; j < Rows; ++j)
             {
-                for(int k = 0; k < Rows; ++k)
+                for(int k = 0; k < spaceship.Ammo.size(); ++k)
                 {
-                    if(spaceship.Ammo[i].collision(alien[j][k])
-                       && alien[j][k].alive)
+                    if(spaceship.Ammo[k].collision(alien[i][j])
+                       && alien[i][j].alive)
                     {
-                        std::cout << "Collision with Ammo" << i << ' ';
                         alien[j][k].alive = false;
                         spaceship.erase(i);//erase lazer from ammo vector
                     }
                 }
             }
         }
-
         
         surface.lock();
         surface.fill(BLACK);
 
         // blit image at rect on surface
 
-        for(int i = 0; i < Collomes; ++i)
+        for(int i = 0; i < Columns; ++i)
         {
             for(int j = 0; j < Rows; ++j)
             {
                 if(alien[i][j].alive)
-                    surface.put_image(Alien::image[j%4], alien[i][j].rect());
+                    surface.put_image(Alien::image[j%4], army.alien[i][j]);
             }
         }
         surface.put_image(spaceship.image, spaceship.rect());
@@ -94,7 +97,7 @@ void game()
         int end = getTicks();
         int dt = RATE - (end - start);
         if(dt > 0) delay(dt);
-        // std::cout << dt << ' ' << Spaceship::Fired_Lazer << '\n';
+        std::cout << dt << ' ' << Spaceship::Fired_Lazer << '\n';
     }
     return;
 }
