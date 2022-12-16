@@ -12,9 +12,9 @@ class Rect
 {
 public:
     Rect(int x0 = 0, int y0 = 0,
-         int w0 = 0, int h0 = 0 ,
+         int w0 = 0, int h0 = 0,
          int s = 5,
-         int dx0 = 0, int dy0 = 0)
+         int dx0 = 5, int dy0 = 5)
 		: x(x0), y(y0),
                   w(w0), h(h0),
                   dx(dx0), dy(dy0)

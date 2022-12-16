@@ -1156,7 +1156,7 @@ int main(int argc, char* argv[])
 	//test_image();
 	//helloworld();			// Of course we must have a hello world right?
 	//test_keyboard();
-	test_key_up_down(); // NEW 2013
+	//test_key_up_down(); // NEW 2013
 	//test_sound();
 	//fancyhelloworld();		// eye candy
 	//test_polygon(false);

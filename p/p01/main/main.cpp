@@ -21,17 +21,61 @@
 #include "Spaceship.h"
 #include "Lazer.h"
 
+struct Star
+{
+    int x;
+    int y;
+    int r;
+    int dx;
+    int dy;
+    int R;
+    int G;
+    int B;
+};
+
 void game()
 {
     Surface surface(W, H);
     Event event;
 
     const int RATE = 1000/30;
-    const int Collomes = 13;
+    const int Columns = 13;
     const int Rows = 6;
+    const int N = 200;
     
     Spaceship spaceship;
-    Army army;
+    Army army(Rows, Columns);
+
+     Star star[N];
+
+        for(int i = 0 ; i < N; i++)
+        {
+            star[i].x = rand() % W;
+            star[i].y = rand() % H;
+            star[i].r = rand() % 3 + 2;
+            star[i].dx = 0;
+            star[i].dy = rand() % 3 + 1;
+            switch (star[i].dy)
+            {
+                case 1:
+                    star[i].R = rand() % 70 + 50;
+                    star[i].G = star[i].R;
+                    star[i].B = star[i].R;
+                    star[i].r = 2;
+                    break;
+                case 2:
+                    star[i].R = rand() % 150 + 50;
+                    star[i].G = star[i].R;
+                    star[i].B = star[i].R;
+                    star[i].r = rand() % 2 + 2;
+                case 3:
+                    star[i].R = rand() % 200 + 55;
+                    star[i].G = star[i].R;
+                    star[i].B = star[i].R;
+                    star[i].r = rand() % 3 + 3;
+            }
+            
+        }
 
     spaceship.x = W/2 - spaceship.w/2;
     spaceship.y = H - spaceship.h;
@@ -46,23 +90,42 @@ void game()
         //move objects
         spaceship.move(keypressed);
         spaceship.move_lazers();
-        //army.move();
+        army.move();
+        army.fire();
+        army.move_lazers();
+
+         for(int i = 0; i < N; i++)
+            { 
+                star[i].y += star[i].dy;
+                if(star[i].y > H + star[i].r)
+                {
+                    star[i].y = 0;
+                }
+            }
         
         // check collisions
         for(int i = 0; i < spaceship.Ammo.size(); ++i)
         {
-            for(int j = 0; j < Collomes; ++j)
+            for(int j = 0; j < Columns; ++j)
             {
                 for(int k = 0; k < Rows; ++k)
                 {
-                    if(spaceship.Ammo[i].collision(alien[j][k])
-                       && alien[j][k].alive)
+                    if(spaceship.Ammo[i].collision(army.army[j][k])
+                       && army.army[j][k].alive)
                     {
-                        std::cout << "Collision with Ammo" << i << ' ';
-                        alien[j][k].alive = false;
+                        //std::cout << "Collision with Ammo" << i << ' ';
+                        army.army[j][k].alive = false;
                         spaceship.erase(i);//erase lazer from ammo vector
                     }
                 }
+            }
+        }
+
+        for(int i = 0; i < army.Ammo.size(); ++i)
+        {
+            if(army.Ammo[i].collision(spaceship))
+            {
+                exit(0);
             }
         }
 
@@ -72,12 +135,17 @@ void game()
 
         // blit image at rect on surface
 
-        for(int i = 0; i < Collomes; ++i)
+        for(int i = 0; i < N; i++)
+            {
+                surface.put_circle(star[i].x, star[i].y, star[i].r, star[i].R, star[i].G, star[i].B);
+            }
+
+        for(int i = 0; i < Columns; ++i)
         {
             for(int j = 0; j < Rows; ++j)
             {
-                if(alien[i][j].alive)
-                    surface.put_image(Alien::image[j%4], alien[i][j].rect());
+                if(army.army[i][j].alive)
+                    surface.put_image(Alien::image[j%4], army.army[i][j]);
             }
         }
         surface.put_image(spaceship.image, spaceship.rect());
@@ -85,6 +153,11 @@ void game()
         for(int i = 0; i < spaceship.Ammo.size(); ++i)
         {
             surface.put_image(Lazer::image, spaceship.Ammo[i].rect());
+        }
+
+        for(int i = 0; i < army.Ammo.size(); ++i)
+        {
+            surface.put_image(Lazer::image, army.Ammo[i].rect());
         }
         
         surface.unlock();

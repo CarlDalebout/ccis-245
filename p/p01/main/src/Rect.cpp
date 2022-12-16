@@ -12,7 +12,7 @@ bool Rect::collision(Rect & rect) const
           && left()   < rect.right()
           && right()  > rect.left())
     {
-        std::cout << "Top Collision \n";
+        //std::cout << "Top Collision \n";
         return true;
     }
     //lazer collides with the bottom of an object
@@ -21,7 +21,7 @@ bool Rect::collision(Rect & rect) const
             && left()   < rect.right()
             && right()  > rect.left())
     {
-        std::cout << "Bottom Collision \n";
+        //std::cout << "Bottom Collision \n";
         return true;
     }
     //lazer collides with left of an object
@@ -30,7 +30,7 @@ bool Rect::collision(Rect & rect) const
             && top()    < rect.bottom()
             && bottom() > rect.top())
     {
-        std::cout << "Left Collision \n";
+        //std::cout << "Left Collision \n";
         return true;
     }
     //lazer collided with right of an object
@@ -39,7 +39,7 @@ bool Rect::collision(Rect & rect) const
             && top()    < rect.bottom()
             && bottom() > rect.top())
     {
-        std::cout << "Right Collision \n";
+        //std::cout << "Right Collision \n";
         return true;
     }
     else

@@ -10,7 +10,7 @@ Image Spaceship::image(Image("images/galaxian/GalaxianGalaxip.gif"));
 
 int Spaceship::Fired_Lazer(0);
 
-const int Spaceship::MAX_LAZER(99);
+const int Spaceship::MAX_LAZER(3);
 
 void Spaceship::move(KeyPressed & keypressed)
 {

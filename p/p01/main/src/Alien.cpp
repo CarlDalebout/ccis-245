@@ -16,9 +16,6 @@ Image Alien::image[4] =
     Image("images/galaxian/GalaxianFlagship.gif")
 };
 
-int Alien::fired_lazers(0);
-
-
 void Alien::move()
 {
     

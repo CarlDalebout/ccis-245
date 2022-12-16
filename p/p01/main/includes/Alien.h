@@ -22,6 +22,8 @@ public:
         alive(1)
     {}
 
+    void move();
+    
 //private:
     static Image image[4];
     static int fired_lazers;
