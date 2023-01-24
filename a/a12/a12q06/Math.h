@@ -1,7 +1,7 @@
 #ifndef MATH_H
 #define MATH_H
 
-class Fib5
+class Fib
 {
 public:
     static int size() {return size_;}
@@ -12,31 +12,31 @@ public:
 
     int  operator()(const int);
 
-    static Fib5 fib5;
+    static Fib fib5;
     
 //private:
     static int *t_;
     static int size_;
     static int numb_objects_;
 
-    Fib5()
+    Fib()
     {
-        if(Fib5::numb_objects_ == 0 && Fib5::t_ == NULL)
+        if(Fib::numb_objects_ == 0 && Fib::t_ == NULL)
         {
-            Fib5::t_ = new int [2];
-            Fib5::size_ = 2;
+            Fib::t_ = new int [2];
+            Fib::size_ = 2;
             t_[0] = t_[1] = 1;
         }
-        Fib5::numb_objects_++;
+        Fib::numb_objects_++;
     }
-    Fib5(int n)
+    Fib(int n)
     {
-        if(Fib5::numb_objects_ == 0 && Fib5::t_ == NULL)
+        if(Fib::numb_objects_ == 0 && Fib::t_ == NULL)
         {
-            Fib5::t_ = new int [n];
-            Fib5::size_ = n+1;
+            Fib::t_ = new int [n];
+            Fib::size_ = n+1;
             t_[0] = t_[1] = 1;
-            for(int i = 2; i < Fib5::size_; ++i)
+            for(int i = 2; i < Fib::size_; ++i)
             {
                 t_[i] = -1;
             }
@@ -45,18 +45,18 @@ public:
         {
             resize(n);
         }
-        Fib5::numb_objects_++;
+        Fib::numb_objects_++;
         
     }
-   ~Fib5()
+   ~Fib()
     {
-        if(Fib5::numb_objects_ > 0)
-            Fib5::numb_objects_--;
+        if(Fib::numb_objects_ > 0)
+            Fib::numb_objects_--;
         else
             delete[] t_;
     }
 };
 
-std::ostream & operator<<(std::ostream &, const Fib5 &);
+std::ostream & operator<<(std::ostream &, const Fib &);
 
 #endif

@@ -14,6 +14,7 @@ public:
 
     static Fib5 fib5;
     
+    
 //private:
     static int *t_;
     static int size_;

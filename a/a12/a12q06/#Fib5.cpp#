@@ -6,6 +6,7 @@ int* Fib5::t_(NULL);
 int  Fib5::size_(0);
 int  Fib5::numb_objects_(0);
 Fib5 Fib5::fib5;
+Fib5 & fib = Fib5::fib5;
 
 
 void Fib5::resize(const int n)

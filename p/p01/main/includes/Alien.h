@@ -22,7 +22,11 @@ public:
         alive(1)
     {}
 
+<<<<<<< HEAD
     void move();
+=======
+    virtual void move();
+>>>>>>> f6a079a4e4b778c6168004c9c1084a9a997aac7c
     
 //private:
     static Image image[4];

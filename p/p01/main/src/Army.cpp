@@ -1,5 +1,6 @@
-#include <Army.h>
+#include "Army.h"
 
+<<<<<<< HEAD
 int Army::Fired_Lazer(0);
 
 void Army::move()
@@ -81,4 +82,12 @@ std::ostream & operator<<(std::ostream & cout, const Army & army)
         cout << "]\n";
     }
     return cout;
+=======
+int Army::Offset = 16;
+
+
+void Army::move()
+{
+    
+>>>>>>> f6a079a4e4b778c6168004c9c1084a9a997aac7c
 }

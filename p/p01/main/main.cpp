@@ -17,7 +17,7 @@
 #include "compgeom.h"
 #include "Surface.h"
 #include "Event.h"
-#include "Army.h"
+#include "Alien.h"
 #include "Spaceship.h"
 #include "Lazer.h"
 
@@ -44,6 +44,7 @@ void game()
     const int N = 200;
     
     Spaceship spaceship;
+<<<<<<< HEAD
     Army army(Rows, Columns);
 
      Star star[N];
@@ -76,7 +77,15 @@ void game()
             }
             
         }
+=======
+>>>>>>> f6a079a4e4b778c6168004c9c1084a9a997aac7c
 
+    std::cout << "Creating spaceship\n";
+    
+    Alien alien[Rows][Columns];
+
+    std::cout << "Creating alians and spaceship\n";
+    
     spaceship.x = W/2 - spaceship.w/2;
     spaceship.y = H - spaceship.h;
     
@@ -90,6 +99,7 @@ void game()
         //move objects
         spaceship.move(keypressed);
         spaceship.move_lazers();
+<<<<<<< HEAD
         army.move();
         army.fire();
         army.move_lazers();
@@ -102,24 +112,39 @@ void game()
                     star[i].y = 0;
                 }
             }
+=======
+        //alien.move();
+>>>>>>> f6a079a4e4b778c6168004c9c1084a9a997aac7c
         
         // check collisions
-        for(int i = 0; i < spaceship.Ammo.size(); ++i)
+        for(int i = 0; i < Columns; ++i)
         {
+<<<<<<< HEAD
             for(int j = 0; j < Columns; ++j)
+=======
+            for(int j = 0; j < Rows; ++j)
+>>>>>>> f6a079a4e4b778c6168004c9c1084a9a997aac7c
             {
-                for(int k = 0; k < Rows; ++k)
+                for(int k = 0; k < spaceship.Ammo.size(); ++k)
                 {
+<<<<<<< HEAD
                     if(spaceship.Ammo[i].collision(army.army[j][k])
                        && army.army[j][k].alive)
                     {
                         //std::cout << "Collision with Ammo" << i << ' ';
                         army.army[j][k].alive = false;
+=======
+                    if(spaceship.Ammo[k].collision(alien[i][j])
+                       && alien[i][j].alive)
+                    {
+                        alien[j][k].alive = false;
+>>>>>>> f6a079a4e4b778c6168004c9c1084a9a997aac7c
                         spaceship.erase(i);//erase lazer from ammo vector
                     }
                 }
             }
         }
+<<<<<<< HEAD
 
         for(int i = 0; i < army.Ammo.size(); ++i)
         {
@@ -129,23 +154,33 @@ void game()
             }
         }
 
+=======
+>>>>>>> f6a079a4e4b778c6168004c9c1084a9a997aac7c
         
         surface.lock();
         surface.fill(BLACK);
 
         // blit image at rect on surface
 
+<<<<<<< HEAD
         for(int i = 0; i < N; i++)
             {
                 surface.put_circle(star[i].x, star[i].y, star[i].r, star[i].R, star[i].G, star[i].B);
             }
 
+=======
+>>>>>>> f6a079a4e4b778c6168004c9c1084a9a997aac7c
         for(int i = 0; i < Columns; ++i)
         {
             for(int j = 0; j < Rows; ++j)
             {
+<<<<<<< HEAD
                 if(army.army[i][j].alive)
                     surface.put_image(Alien::image[j%4], army.army[i][j]);
+=======
+                if(alien[i][j].alive)
+                    surface.put_image(Alien::image[j%4], army.alien[i][j]);
+>>>>>>> f6a079a4e4b778c6168004c9c1084a9a997aac7c
             }
         }
         surface.put_image(spaceship.image, spaceship.rect());
@@ -167,7 +202,7 @@ void game()
         int end = getTicks();
         int dt = RATE - (end - start);
         if(dt > 0) delay(dt);
-        // std::cout << dt << ' ' << Spaceship::Fired_Lazer << '\n';
+        std::cout << dt << ' ' << Spaceship::Fired_Lazer << '\n';
     }
     return;
 }
